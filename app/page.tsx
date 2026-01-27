@@ -1,19 +1,24 @@
 import getBoleroDelDia from "@/lib/getBoleroDelDia"
 import { subtexts } from "@/data/boleros"
 
+// Force dynamic regeneration (do not cache)
+export const dynamic = 'force-dynamic'
+
 export default function Home() {
   const bolero = getBoleroDelDia()
 
-  const today = new Date().toLocaleDateString("es-MX", {
+  // Use Mexico City time for everything
+  const mexicoNow = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Mexico_City" }))
+  
+  const today = mexicoNow.toLocaleDateString("es-MX", {
     weekday: "long",
     day: "numeric",
     month: "long",
   })
 
   // compute day-of-year to pick a rotating subtext
-  const now = new Date()
-  const start = new Date(now.getFullYear(), 0, 0)
-  const diff = now.getTime() - start.getTime()
+  const start = new Date(mexicoNow.getFullYear(), 0, 0)
+  const diff = mexicoNow.getTime() - start.getTime()
   const oneDay = 1000 * 60 * 60 * 24
   const dayOfYear = Math.floor(diff / oneDay)
   const subtext = subtexts[dayOfYear % subtexts.length]
